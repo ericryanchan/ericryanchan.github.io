@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial;
+}
+
+.header {
+  text-align: center;
+  padding: 32px;
+}
+
+.gallery_row {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  -ms-flex-wrap: wrap; /* IE10 */
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+/* Create four equal columns that sits next to each other */
+.gallery_column {
+  -ms-flex: 25%; /* IE10 */
+  flex: 25%;
+  max-width: 25%;
+  padding: 0 4px;
+}
+
+.gallery_column img {
+  margin-top: 8px;
+  vertical-align: middle;
+  width: 100%;
+}
+
+/* Responsive layout - makes a two column-layout instead of four columns */
+@media screen and (max-width: 1800px) {
+  .gallery_column {
+    -ms-flex: 50%;
+    flex: 50%;
+    max-width: 50%;
+  }
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .gallery_column {
+    -ms-flex: 100%;
+    flex: 100%;
+    max-width: 100%;
+  }
+}
+</style>
+
+<head>
+  <title>Eric Ryan Chan</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo">
+    <a href="index.html">
+      Eric Ryan Chan
+    </a>
+    </div>
+
+  <div class="menu">
+    <ul>
+      <li>Resume</li>
+      <a href="publications.html"><li>Publications</li></a>
+      <li>Projects</li>
+      <li>Photography</li>
+      <li>Art & Design</li>
+    </ul>
+  </div>
+
+</div>
+
+
+<!-- Photo Grid -->
+<div class="gallery_row">
+  <div class="gallery_column">
+    <img src="images/gallery/1.jpg" style="width:100%">
+    <img src="images/gallery/2.jpg" style="width:100%">
+    <img src="images/gallery/3.jpg" style="width:100%">
+    <img src="images/gallery/4.jpg" style="width:100%">
+    <img src="images/gallery/5.jpg" style="width:100%">
+    <img src="images/gallery/6.jpg" style="width:100%">
+    <img src="images/gallery/7.jpg" style="width:100%">
+  </div>
+  <div class="gallery_column">
+    <img src="images/gallery/8.jpg" style="width:100%">
+    <img src="images/gallery/9.jpg" style="width:100%">
+    <img src="images/gallery/10.jpg" style="width:100%">
+    <img src="images/gallery/11.jpg" style="width:100%">
+    <img src="images/gallery/12.jpg" style="width:100%">
+    <img src="images/gallery/13.jpg" style="width:100%">
+    <img src="images/gallery/25.jpg" style="width:100%">
+  </div>
+  <div class="gallery_column">
+    <img src="images/gallery/14.jpg" style="width:100%">
+    <img src="images/gallery/15.jpg" style="width:100%">
+    <img src="images/gallery/16.jpg" style="width:100%">
+    <img src="images/gallery/17.jpg" style="width:100%">
+    <img src="images/gallery/18.jpg" style="width:100%">
+    <img src="images/gallery/19.jpg" style="width:100%">
+  </div>
+  <div class="gallery_column">
+    <img src="images/gallery/20.jpg" style="width:100%">
+    <img src="images/gallery/21.jpg" style="width:100%">
+    <img src="images/gallery/22.jpg" style="width:100%">
+    <img src="images/gallery/23.jpg" style="width:100%">
+    <img src="images/gallery/24.jpg" style="width:100%">
+
+  </div>
+</div>
+
+</body>
+</html>
