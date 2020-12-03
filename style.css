@@ -79,7 +79,6 @@ a {
 }
 
 .section{
-  /* width: 75%; */
   margin: 50px;
 }
 
@@ -89,7 +88,5 @@ a {
 }
 
 .section p{
-  /* margin: 50px; */
-  /* width: 75%; */
   font-family: 'Poiret One', cursive;
 }
