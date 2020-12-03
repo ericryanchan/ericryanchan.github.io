@@ -77,3 +77,19 @@ a {
 .column:hover .fade_text{
   opacity: 1;
 }
+
+.section{
+  /* width: 75%; */
+  margin: 50px;
+}
+
+.section h1{
+  font-family: 'Poiret One', cursive;
+  margin-bottom: 50px;
+}
+
+.section p{
+  /* margin: 50px; */
+  /* width: 75%; */
+  font-family: 'Poiret One', cursive;
+}
