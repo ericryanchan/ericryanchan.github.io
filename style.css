@@ -1,11 +1,11 @@
 @font-face {
   font-family: Poiret-One;
-  src: url(PoiretOne-Regular.ttf);
+  src: url(./PoiretOne-Regular.ttf);
 }
 
 @font-face {
   font-family: Arcon;
-  src: url(Arcon-Regular.otf);
+  src: url(./Arcon-Regular.otf);
 }
 
 *{
