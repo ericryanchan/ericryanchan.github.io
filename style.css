@@ -30,7 +30,8 @@ a {
 
 .menu ul{
   display: inline-flex;
-  margin: 50px;
+  margin-top: 50px;
+  margin-right: 50px;
   float: right;
 }
 .menu ul li{
