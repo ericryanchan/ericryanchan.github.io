@@ -1,0 +1,146 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import { getCollection } from 'astro:content';
+
+const papers = (await getCollection('papers', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.priority - a.data.priority);
+
+// Resolve co-located media files to their Vite-processed URLs.
+// Absolute paths (starting with "/") are passed through unchanged.
+const mediaGlob = import.meta.glob<string>(
+  '/src/content/papers/**/*.{jpg,jpeg,png,gif,webp,svg,mp4,webm,mov}',
+  { query: '?url', import: 'default', eager: true }
+);
+function resolveMedia(src: string, slug: string): string {
+  if (src.startsWith('./')) {
+    const key = `/src/content/papers/${slug}/${src.slice(2)}`;
+    return mediaGlob[key] ?? src;
+  }
+  return src;
+}
+function isVideo(src: string): boolean {
+  return /\.(mp4|webm|mov)$/i.test(src);
+}
+---
+
+<BaseLayout title="Eric Ryan Chan — Research">
+  <Nav />
+
+  <main>
+    <div class="paper-list">
+      {papers.map((paper, idx) => {
+        const slug = paper.id.split('/')[0];
+        const displayIndex = String(idx).padStart(2, '0');
+        const { name, venue, thumbnails } = paper.data;
+
+        return (
+          <a class="row" href={`/papers/${slug}`}>
+            <div class="row-left">
+              <span class="paper-index">{displayIndex}</span>
+              <div class="paper-info">
+                <span class="paper-name">{name}</span>
+                {venue && <span class="paper-venue">{venue}</span>}
+              </div>
+            </div>
+            <div class="row-images">
+              {thumbnails.map((src) => {
+                const url = resolveMedia(src, slug);
+                return isVideo(src) ? (
+                  <video autoplay muted loop playsinline draggable="false">
+                    <source src={url} type="video/mp4" />
+                  </video>
+                ) : (
+                  <img src={url} alt="" loading="lazy" draggable="false" />
+                );
+              })}
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .paper-list {
+    margin-top: var(--nav-total);
+    padding: 0 var(--page-pad);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    height: var(--row-height);
+    border-top: 1px solid var(--color-line);
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .row-left {
+    width: var(--col-left);
+    flex-shrink: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  .paper-index {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    font-weight: 400;
+    min-width: 18px;
+    flex-shrink: 0;
+  }
+
+  .paper-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .paper-name {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+
+  .paper-venue {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+  }
+
+  .row-images {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    height: 100%;
+    padding: 12px 0;
+    opacity: 0.1;
+    filter: grayscale(1);
+    transition: opacity 1.5s ease, filter 1.5s ease;
+  }
+
+  .row:hover .row-images {
+    opacity: 1;
+    filter: none;
+    transition: opacity 0.2s ease, filter 0.2s ease;
+  }
+
+  .row-images img,
+  .row-images video {
+    height: calc(var(--row-height) - 24px);
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+    user-select: none;
+  }
+</style>

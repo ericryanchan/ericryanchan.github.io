@@ -1,0 +1,55 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<nav>
+  <a href="/" class="site-name">Eric Ryan Chan</a>
+  <div class="nav-links">
+    <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>Research</a>
+    <a href="/about" class:list={['nav-link', { active: currentPath === '/about' }]}>About</a>
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: calc(var(--nav-height) + var(--nav-gap));
+    padding: 0 var(--page-pad);
+    padding-bottom: var(--nav-gap);
+    background: var(--color-bg);
+  }
+
+  .site-name {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+  }
+
+  .nav-link {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+
+  .nav-link.active {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+</style>

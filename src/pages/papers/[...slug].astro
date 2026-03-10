@@ -1,0 +1,221 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import { getCollection, render } from 'astro:content';
+
+const mediaGlob = import.meta.glob<string>(
+  '/src/content/papers/**/*.{jpg,jpeg,png,gif,webp,svg,mp4,webm,mov}',
+  { query: '?url', import: 'default', eager: true }
+);
+function resolveMedia(src: string, slug: string): string {
+  if (src.startsWith('./')) {
+    const key = `/src/content/papers/${slug}/${src.slice(2)}`;
+    return mediaGlob[key] ?? src;
+  }
+  return src;
+}
+function isVideo(src: string): boolean {
+  return /\.(mp4|webm|mov)$/i.test(src);
+}
+
+export async function getStaticPaths() {
+  const papers = await getCollection('papers', ({ data }) => !data.draft);
+  const sorted = papers.sort((a, b) => b.data.priority - a.data.priority);
+  return sorted.map((paper, idx) => {
+    const slug = paper.id.split('/')[0];
+    return {
+      params: { slug },
+      props: { entry: paper, displayIndex: String(idx).padStart(2, '0') },
+    };
+  });
+}
+
+const { entry, displayIndex } = Astro.props;
+const { name, venue, authors, thumbnails, projectUrl, arxivUrl, codeUrl } = entry.data;
+const slug = entry.id.split('/')[0];
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={`Eric Ryan Chan — ${name}`}>
+  <Nav />
+
+  <div class="paper-header">
+    <div class="paper-header-left">
+      <span class="paper-index">{displayIndex}</span>
+      <span class="paper-name">{name}</span>
+    </div>
+    {venue && <div class="paper-venue">{venue}</div>}
+  </div>
+
+  <div class="content-split">
+
+    <aside class="text-panel">
+      {authors && (
+        <p class="authors">{authors}</p>
+      )}
+
+      <div class="links">
+        {projectUrl && <a href={projectUrl} target="_blank" rel="noopener">Project page</a>}
+        {arxivUrl && <a href={arxivUrl} target="_blank" rel="noopener">arXiv</a>}
+        {codeUrl && <a href={codeUrl} target="_blank" rel="noopener">Code</a>}
+      </div>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </aside>
+
+    <div class="image-panel">
+      {thumbnails.map((src) => {
+        const url = resolveMedia(src, slug);
+        return (
+          <div class="image-item">
+            {isVideo(src) ? (
+              <video autoplay muted loop playsinline draggable="false">
+                <source src={url} type="video/mp4" />
+              </video>
+            ) : (
+              <img src={url} alt="" loading="lazy" draggable="false" />
+            )}
+          </div>
+        );
+      })}
+    </div>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .paper-header {
+    position: fixed;
+    top: var(--nav-total);
+    left: 0;
+    right: 0;
+    z-index: 80;
+    background: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--filter-height);
+    padding: 0 var(--page-pad);
+  }
+
+  .paper-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--page-pad);
+    right: var(--page-pad);
+    height: 1px;
+    background: var(--color-line);
+  }
+
+  .paper-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  .paper-index {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    font-weight: 400;
+  }
+
+  .paper-name {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+  }
+
+  .paper-venue {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .content-split {
+    --split-col: 480px;
+    margin-top: calc(var(--nav-total) + var(--filter-height));
+    display: grid;
+    grid-template-columns: var(--split-col) 1fr;
+    align-items: start;
+  }
+
+  .text-panel {
+    position: sticky;
+    top: calc(var(--nav-total) + var(--filter-height));
+    height: calc(100vh - var(--nav-total) - var(--filter-height));
+    overflow-y: auto;
+    padding: 40px var(--page-pad);
+    border-right: 1px solid var(--color-line);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .authors {
+    font-size: 12px;
+    line-height: 1.7;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--color-muted);
+  }
+
+  .links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .links a {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  .prose :global(p) {
+    font-size: 13px;
+    line-height: 1.75;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-bottom: 14px;
+  }
+
+  .prose :global(h2) {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+
+  .prose :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  .image-panel {
+    padding: 40px var(--page-pad) 120px 40px;
+  }
+
+  .image-item {
+    margin-bottom: 40px;
+    padding: 0 10%;
+  }
+
+  .image-item img,
+  .image-item video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>
